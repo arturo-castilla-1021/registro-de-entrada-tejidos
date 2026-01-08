@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Entrada - ESIT</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; }
+        .logo { width: 150px; height: auto; margin-bottom: 15px; }
+        h2 { color: #003366; margin-bottom: 20px; font-size: 22px; }
+        label { display: block; margin-top: 10px; font-weight: bold; color: #555; text-align: left; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 15px; background-color: #003366; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        button:hover { background-color: #002244; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="logo.png" alt="Logo ESIT" class="logo">
+    
+    <h2>Registro de Entrada</h2>
+    <form id="registroForm">
+        <label>Nombre Completo</label>
+        <input type="text" id="nombre" placeholder="Nombre completo" required>
+        
+        <label>Grupo</label>
+        <input type="text" id="grupo" placeholder="Ej. 1AV1" required>
+        
+        <label>Boleta</label>
+        <input type="text" id="boleta" placeholder="Número de boleta" required>
+        
+        <label>Asunto</label>
+        <select id="asunto">
+            <option value="Servicio Social">Servicio Social</option>
+            <option value="Egresado">Egresado</option>
+            <option value="Prácticas">Prácticas</option>
+            <option value="Clase">Clase</option>
+            <option value="Trabajos">Trabajos</option>
+            <option value="Asesorías">Asesorías</option>
+        </select>
+
+        <button type="submit" id="btnEnviar">Registrar Entrada</button>
+    </form>
+</div>
+
+<script>
+    // REEMPLAZA CON TUS CLAVES DE FIREBASE
+    const firebaseConfig = {
+        apiKey: "TU_API_KEY",
+        authDomain: "TU_PROYECTO.firebaseapp.com",
+        databaseURL: "https://TU_PROYECTO.firebaseio.com",
+        projectId: "TU_PROYECTO",
+        storageBucket: "TU_PROYECTO.appspot.com",
+        messagingSenderId: "TU_ID",
+        appId: "TU_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    document.getElementById('registroForm').onsubmit = function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnEnviar');
+        btn.disabled = true;
+        btn.innerText = "Registrando...";
+
+        const datos = {
+            nombre: document.getElementById('nombre').value,
+            grupo: document.getElementById('grupo').value,
+            boleta: document.getElementById('boleta').value,
+            asunto: document.getElementById('asunto').value,
+            horaEntrada: new Date().toLocaleString('es-MX')
+        };
+
+        database.ref('entradas').push(datos).then(() => {
+            alert("¡Registrado correctamente!");
+            document.getElementById('registroForm').reset();
+            btn.disabled = false;
+            btn.innerText = "Registrar Entrada";
+        });
+    };
+</script>
+</body>
+</html>
